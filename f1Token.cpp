@@ -1,6 +1,6 @@
 #include <ctype.h>
 #include <string.h>
-#include "language.h"
+#include "langToken.h"
 
 const int classSep = 1000;
 const int tableWidth = 10;

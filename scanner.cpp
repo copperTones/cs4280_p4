@@ -1,6 +1,6 @@
 #include "scanner.h"
 #include <string.h>
-#include "language.h"
+#include "langToken.h"
 
 istream* inp;
 int line;
