@@ -1,12 +1,11 @@
-HEADER = token.h scanner.h langToken.h
-CPP = main.cpp scanner.cpp
+HEADER = token.h scanner.h langToken.h parser.h
+CPP = main.cpp scanner.cpp parser.cpp
 LANG = f1Token.cpp
-PROJ = p1
 
-P1: p1
-p1: $(HEADER) $(CPP) $(LANG)
-	g++ $(CPP) $(LANG) -o $(PROJ)
+P2: p2
+p2: $(HEADER) $(CPP) $(LANG)
+	g++ $(CPP) $(LANG) -o p2
 
 .PHONY: clean
 clean:
-	rm $(PROJ)
+	rm p2
