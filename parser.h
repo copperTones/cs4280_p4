@@ -1,1 +1,2 @@
-void parser();
+int parser();
+void nont_start();
