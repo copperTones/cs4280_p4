@@ -1,0 +1,17 @@
+#define eofToken   0
+#define idToken    1
+#define intToken   2
+#define opToken    3
+#define condToken  4
+#define endToken   5
+#define funcToken  6
+#define letToken   7
+#define loopToken  8
+#define mainToken  9
+#define printToken 10
+#define scanToken  11
+#define startToken 12
+#define stopToken  13
+#define thenToken  14
+#define varToken   15
+#define voidToken  16
