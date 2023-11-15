@@ -1,6 +1,8 @@
 #include <iostream>
 #include "parser.h"
+#include "langBNF.h"
 #include "f1Consts.h"
+using namespace std;
 
 void nont_vars();
 void nont_varList();

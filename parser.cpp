@@ -3,6 +3,7 @@
 #include <iostream>
 #include "scanner.h"
 #include "parser.h"
+#include "langBNF.h"
 
 Token next;
 
