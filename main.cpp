@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <stdexcept>
 #include "scanner.h"
 #include "parser.h"
 using namespace std;
@@ -23,5 +24,10 @@ int main(int argc, char* argv[]) {
 		scanFile(&cin);
 	}
 
-	parser();
+	try {
+		parser();
+	} catch (const runtime_error& e) {
+		cout << e.what() << "\n";
+		return -1;
+	}
 }

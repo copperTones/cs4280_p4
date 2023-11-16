@@ -1,6 +1,9 @@
 #include <ctype.h>
 #include <string.h>
+#include <stdio.h>
+#include <stdexcept>
 #include "langToken.h"
+using namespace std;
 
 const int classSep = 1000;
 const int tableWidth = 10;
@@ -30,6 +33,12 @@ const char* sortedKeyw[] = {
 "then",
 "var",
 "void"
+};
+
+const char *errorNames[] = {
+"Unknown character",    // 1000
+"Malformed identifier", // 1001
+"Unfinished comment"    // 1002
 };
 
 int charMap(char c) {
@@ -71,17 +80,25 @@ int charMap(char c) {
 	return 3;
 }
 
-int filterToken(int type, char *instance) {
-	if (type == 100)
+int filterToken(Token tk) {
+	if (tk.type >= classSep) {
+		// not willing to reformat to c++ strings
+		char err[100];
+		sprintf(err, "%d: LEXICAL ERROR: %s",
+			tk.line,
+			errorNames[tk.type - classSep]);
+		throw runtime_error(err);
+	}
+	if (tk.type == 100)
 		return -1;
-	if (type != 1)
-		return type;
+	if (tk.type != 1)
+		return tk.type;
 
 	// binary search!
 	int top = 0, bot = 13, mid, m;
 	while (1) {
 		mid = (bot + top)/2;
-		m = strcmp(instance, sortedKeyw[mid]);
+		m = strcmp(tk.instance, sortedKeyw[mid]);
 		if (bot == top+1 && m != 0) {
 			// not in list -> idToken
 			return 1;

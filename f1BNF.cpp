@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string.h>
 #include "parser.h"
 #include "langBNF.h"
 #include "f1Consts.h"
@@ -54,10 +55,10 @@ cout << "varList\n";
 void nont_exp() {
 cout << "exp\n";
 	nont_exp2();
-	if (next.type == opToken && next.instance == "+") {
+	if (next.type == opToken && strcmp(next.instance, "+") == 0) {
 		require(opToken);
 		nont_exp();
-	} else if (next.type == opToken && next.instance == "-") {
+	} else if (next.type == opToken && strcmp(next.instance, "-") == 0) {
 		require(opToken);
 		nont_exp();
 	}
@@ -66,7 +67,7 @@ cout << "exp\n";
 void nont_exp2() {
 cout << "exp2\n";
 	nont_exp3();
-	if (next.type == opToken && next.instance == "*") {
+	if (next.type == opToken && strcmp(next.instance, "*") == 0) {
 		require(opToken);
 		nont_exp2();
 	}
@@ -74,12 +75,12 @@ cout << "exp2\n";
 
 void nont_exp3() {
 cout << "exp3\n";
-	if (next.type == opToken && next.instance == "-") {
+	if (next.type == opToken && strcmp(next.instance, "-") == 0) {
 		require(opToken);
 		nont_exp3();
 	} else {
 		nont_exp4();
-		if (next.type == opToken && next.instance == "/") {
+		if (next.type == opToken && strcmp(next.instance, "/") == 0) {
 			require(opToken);
 			nont_exp3();
 		}
@@ -88,7 +89,7 @@ cout << "exp3\n";
 
 void nont_exp4() {
 cout << "exp4\n";
-	if (next.type == opToken && next.instance == "[") {
+	if (next.type == opToken && strcmp(next.instance, "[") == 0) {
 		require(opToken);
 		nont_exp();
 		require(opToken, "]");

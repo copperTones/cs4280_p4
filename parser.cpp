@@ -1,6 +1,6 @@
 #include <string.h>
-#include <stdlib.h>
-#include <iostream>
+#include <stdio.h>
+#include <stdexcept>
 #include "scanner.h"
 #include "parser.h"
 #include "langBNF.h"
@@ -10,9 +10,16 @@ Token next;
 int parser() {
 	next = nextToken();
 	nont_start();
-	if (next.type == 0) // EOF
-		return 0;
-	return -1;
+	if (next.type != 0) { // EOF
+		// not willing to reformat to c++ strings
+		char err[100];
+		sprintf(err, "%d: PARSER ERROR: Expected EOF, got %s \"%s\" instead",
+			next.line,
+			tokenNames[next.type],
+			next.instance);
+		throw runtime_error(err);
+	}
+	return 0;
 }
 
 void require(int type) {
@@ -30,9 +37,11 @@ void require(int type, const char* instance) {
 }
 
 void errMsg() {
-	cout << next.line << ": PARSER ERROR: Unexpected token "
-	<< tokenNames[next.type] << " "
-	<< next.instance << "\n";
-	// cleanup?
-	exit(1);
+	// not willing to reformat to c++ strings
+	char err[100];
+	sprintf(err, "%d: PARSER ERROR: Unexpected token %s \"%s\"",
+		next.line,
+		tokenNames[next.type],
+		next.instance);
+	throw runtime_error(err);
 }

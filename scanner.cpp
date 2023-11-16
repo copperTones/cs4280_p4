@@ -34,7 +34,7 @@ Token nextToken() {
 				next.type = act;
 				next.line = line;
 				inp->unget();
-				return next; // we don't deal with it
+				break; // we don't deal with it
 			} else {
 				// 0000s - jump
 				if (act != 0 && ci < 8)
@@ -44,7 +44,7 @@ Token nextToken() {
 					line++;
 			}
 		}
-		next.type = filterToken(next.type, next.instance);
+		next.type = filterToken(next);
 	}
 
 	return next;
