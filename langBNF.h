@@ -1,3 +1,5 @@
+#include "node.h"
+
 extern const char *tokenNames[];
 
-void nont_start();
+Node* nont_start();

@@ -36,6 +36,20 @@ void require(int type, const char* instance) {
 	next = nextToken();
 }
 
+Token* match(int type) {
+	Token* token = new Token();
+	*token = next;
+	require(type);
+	return token;
+}
+
+Token* match(int type, const char* instance) {
+	Token* token = new Token();
+	*token = next;
+	require(type, instance);
+	return token;
+}
+
 void errMsg() {
 	// not willing to reformat to c++ strings
 	char err[100];

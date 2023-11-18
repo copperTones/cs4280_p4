@@ -5,109 +5,126 @@
 #include "f1Consts.h"
 using namespace std;
 
-void nont_vars();
-void nont_varList();
-void nont_exp();
-void nont_exp2();
-void nont_exp3();
-void nont_exp4();
-void nont_stats();
-void nont_stats2();
-void nont_stat();
-void nont_block();
-void nont_in();
-void nont_out();
-void nont_if();
-void nont_loop();
-void nont_assign();
-void nont_relOp();
+Node* nont_vars();
+Node* nont_varList();
+Node* nont_exp();
+Node* nont_exp2();
+Node* nont_exp3();
+Node* nont_exp4();
+Node* nont_stats();
+Node* nont_stats2();
+Node* nont_stat();
+Node* nont_block();
+Node* nont_in();
+Node* nont_out();
+Node* nont_if();
+Node* nont_loop();
+Node* nont_assign();
+Node* nont_relOp();
 
-void nont_start() {
-cout << "start\n";
-	nont_vars();
+Node* nont_start() {
+	Node* node = new Node();
+	strcpy(node->type, "start");
+	node->nont[0] = nont_vars();
 	require(mainToken);
-	nont_stats();
+	node->nont[1] = nont_stats();
 	require(endToken);
+	return node;
 }
 
-void nont_vars() {
-cout << "vars\n";
+Node* nont_vars() {
+	Node* node = new Node();
+	strcpy(node->type, "vars");
 	if (next.type == letToken) {
 		require(letToken);
 		require(idToken);
 		require(opToken, "=");
 		require(intToken);
-		nont_varList();
+		node->nont[0] = nont_varList();
 		require(opToken, ".");
 	}
+	return node;
 }
 
-void nont_varList() {
-cout << "varList\n";
+Node* nont_varList() {
+	Node* node = new Node();
+	strcpy(node->type, "varList");
 	if (next.type == idToken) {
 		require(idToken);
 		require(opToken, "=");
 		require(intToken);
-		nont_varList();
+		node->nont[0] = nont_varList();
 	}
+	return node;
 }
 
-void nont_exp() {
-cout << "exp\n";
-	nont_exp2();
+Node* nont_exp() {
+	Node* node = new Node();
+	strcpy(node->type, "exp");
+	node->nont[0] = nont_exp2();
 	if (next.type == opToken && strcmp(next.instance, "+") == 0) {
 		require(opToken);
-		nont_exp();
+		node->nont[1] = nont_exp();
 	} else if (next.type == opToken && strcmp(next.instance, "-") == 0) {
 		require(opToken);
-		nont_exp();
+		node->nont[1] = nont_exp();
 	}
+	return node;
 }
 
-void nont_exp2() {
-cout << "exp2\n";
-	nont_exp3();
+Node* nont_exp2() {
+	Node* node = new Node();
+	strcpy(node->type, "exp2");
+	node->nont[0] = nont_exp3();
 	if (next.type == opToken && strcmp(next.instance, "*") == 0) {
 		require(opToken);
-		nont_exp2();
+		node->nont[1] = nont_exp2();
 	}
+	return node;
 }
 
-void nont_exp3() {
-cout << "exp3\n";
+Node* nont_exp3() {
+	Node* node = new Node();
+	strcpy(node->type, "exp3");
 	if (next.type == opToken && strcmp(next.instance, "-") == 0) {
 		require(opToken);
-		nont_exp3();
+		node->nont[0] = nont_exp3();
 	} else {
-		nont_exp4();
+		node->nont[0] = nont_exp4();
 		if (next.type == opToken && strcmp(next.instance, "/") == 0) {
 			require(opToken);
-			nont_exp3();
+			node->nont[1] = nont_exp3();
 		}
 	}
+	return node;
 }
 
-void nont_exp4() {
-cout << "exp4\n";
+Node* nont_exp4() {
+	Node* node = new Node();
+	strcpy(node->type, "exp4");
 	if (next.type == opToken && strcmp(next.instance, "[") == 0) {
 		require(opToken);
-		nont_exp();
+		node->nont[0] = nont_exp();
 		require(opToken, "]");
 	} else if (next.type == intToken) {
 		require(intToken);
 	} else {
 		require(idToken);
 	}
+	return node;
 }
 
-void nont_stats() {
-cout << "stats\n";
-	nont_stat();
-	nont_stats2();
+Node* nont_stats() {
+	Node* node = new Node();
+	strcpy(node->type, "stats");
+	node->nont[0] = nont_stat();
+	node->nont[1] = nont_stats2();
+	return node;
 }
 
-void nont_stats2() {
-cout << "stats2\n";
+Node* nont_stats2() {
+	Node* node = new Node();
+	strcpy(node->type, "stats2");
 	switch (next.type) {
 		case startToken:
 		case scanToken:
@@ -115,108 +132,118 @@ cout << "stats2\n";
 		case condToken:
 		case loopToken:
 		case idToken:
-			nont_stat();
-			nont_stats2();
+			node->nont[0] = nont_stat();
+			node->nont[1] = nont_stats2();
 			break;
 	}
+	return node;
 }
 
-void nont_stat() {
-cout << "stat\n";
+Node* nont_stat() {
+	Node* node = new Node();
+	strcpy(node->type, "stat");
 	switch (next.type) {
 		case startToken:
-			nont_block();
+			node->nont[0] = nont_block();
 			break;
 		case scanToken:
-			nont_in();
+			node->nont[0] = nont_in();
 			break;
 		case printToken:
-			nont_out();
+			node->nont[0] = nont_out();
 			break;
 		case condToken:
-			nont_if();
+			node->nont[0] = nont_if();
 			break;
 		case loopToken:
-			nont_loop();
+			node->nont[0] = nont_loop();
 			break;
 		case idToken:
-			nont_assign();
+			node->nont[0] = nont_assign();
 			break;
 		default:
-			cout << next.type << " not of "
-				<< startToken << " "
-				<< scanToken << " "
-				<< printToken << " "
-				<< condToken << " "
-				<< loopToken << " "
-				<< idToken << "\n";
 			errMsg();
 			break;
 	}
+	return node;
 }
 
-void nont_block() {
-cout << "block\n";
+Node* nont_block() {
+	Node* node = new Node();
+	strcpy(node->type, "block");
 	require(startToken);
-	nont_vars();
-	nont_stats();
+	node->nont[0] = nont_vars();
+	node->nont[1] = nont_stats();
 	require(stopToken);
+	return node;
 }
 
-void nont_in() {
-cout << "in\n";
+Node* nont_in() {
+	Node* node = new Node();
+	strcpy(node->type, "in");
 	require(scanToken);
 	require(idToken);
 	require(opToken, ".");
+	return node;
 }
 
-void nont_out() {
-cout << "out\n";
+Node* nont_out() {
+	Node* node = new Node();
+	strcpy(node->type, "out");
 	require(printToken);
-	nont_exp();
+	node->nont[0] = nont_exp();
 	require(opToken, ".");
+	return node;
 }
 
-void nont_if() {
-cout << "if\n";
+Node* nont_if() {
+	Node* node = new Node();
+	strcpy(node->type, "if");
 	require(condToken);
 	require(opToken, "(");
-	nont_exp();
-	nont_relOp();
-	nont_exp();
+	node->nont[0] = nont_exp();
+	node->nont[1] = nont_relOp();
+	node->nont[2] = nont_exp();
 	require(opToken, ")");
-	nont_stat();
+	node->nont[3] = nont_stat();
+	return node;
 }
 
-void nont_loop() {
-cout << "loop\n";
+Node* nont_loop() {
+	Node* node = new Node();
+	strcpy(node->type, "loop");
 	require(loopToken);
 	require(opToken, "(");
-	nont_exp();
-	nont_relOp();
-	nont_exp();
+	node->nont[0] = nont_exp();
+	node->nont[1] = nont_relOp();
+	node->nont[2] = nont_exp();
 	require(opToken, ")");
-	nont_stat();
+	node->nont[3] = nont_stat();
+	return node;
 }
 
-void nont_assign() {
-cout << "assign\n";
+Node* nont_assign() {
+	Node* node = new Node();
+	strcpy(node->type, "assign");
 	require(idToken);
 	require(opToken, "~");
-	nont_exp();
+	node->nont[0] = nont_exp();
 	require(opToken, ".");
+	return node;
 }
 
-void nont_relOp() {
-cout << "relOp\n";
+Node* nont_relOp() {
+	Node* node = new Node();
+	strcpy(node->type, "relOp");
 	switch (next.instance[0]) {
 		case '<':
 		case '>':
 		case '=':
 		case '~':
-			require(opToken);
+			node->token[0] = match(opToken);
 			break;
 	default:
 		errMsg();
 	}
+	return node;
 }
