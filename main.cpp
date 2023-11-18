@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include "scanner.h"
 #include "parser.h"
+#include "testTree.h"
 using namespace std;
 
 int main(int argc, char* argv[]) {
@@ -25,7 +26,8 @@ int main(int argc, char* argv[]) {
 	}
 
 	try {
-		parser();
+		Node* tree = parser();
+		printTree(tree);
 	} catch (const runtime_error& e) {
 		cout << e.what() << "\n";
 		return -1;

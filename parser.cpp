@@ -7,9 +7,9 @@
 
 Token next;
 
-int parser() {
+Node* parser() {
 	next = nextToken();
-	nont_start();
+	Node* tree = nont_start();
 	if (next.type != 0) { // EOF
 		// not willing to reformat to c++ strings
 		char err[100];
@@ -19,7 +19,7 @@ int parser() {
 			next.instance);
 		throw runtime_error(err);
 	}
-	return 0;
+	return tree;
 }
 
 void require(int type) {

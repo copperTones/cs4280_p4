@@ -1,8 +1,9 @@
 #include "token.h"
+#include "node.h"
 
 extern Token next;
 
-int parser();
+Node* parser();
 void require(int);
 void require(int, const char*);
 Token* match(int);
