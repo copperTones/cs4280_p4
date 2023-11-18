@@ -37,9 +37,9 @@ Node* nont_vars() {
 	strcpy(node->type, "vars");
 	if (next.type == letToken) {
 		require(letToken);
-		require(idToken);
+		node->token[0] = match(idToken);
 		require(opToken, "=");
-		require(intToken);
+		node->token[1] = match(intToken);
 		node->nont[0] = nont_varList();
 		require(opToken, ".");
 	}
@@ -50,9 +50,9 @@ Node* nont_varList() {
 	Node* node = new Node();
 	strcpy(node->type, "varList");
 	if (next.type == idToken) {
-		require(idToken);
+		node->token[0] = match(idToken);
 		require(opToken, "=");
-		require(intToken);
+		node->token[1] = match(intToken);
 		node->nont[0] = nont_varList();
 	}
 	return node;
@@ -63,10 +63,10 @@ Node* nont_exp() {
 	strcpy(node->type, "exp");
 	node->nont[0] = nont_exp2();
 	if (next.type == opToken && strcmp(next.instance, "+") == 0) {
-		require(opToken);
+		node->token[0] = match(opToken);
 		node->nont[1] = nont_exp();
 	} else if (next.type == opToken && strcmp(next.instance, "-") == 0) {
-		require(opToken);
+		node->token[0] = match(opToken);
 		node->nont[1] = nont_exp();
 	}
 	return node;
@@ -77,7 +77,7 @@ Node* nont_exp2() {
 	strcpy(node->type, "exp2");
 	node->nont[0] = nont_exp3();
 	if (next.type == opToken && strcmp(next.instance, "*") == 0) {
-		require(opToken);
+		node->token[0] = match(opToken);
 		node->nont[1] = nont_exp2();
 	}
 	return node;
@@ -87,12 +87,12 @@ Node* nont_exp3() {
 	Node* node = new Node();
 	strcpy(node->type, "exp3");
 	if (next.type == opToken && strcmp(next.instance, "-") == 0) {
-		require(opToken);
+		node->token[0] = match(opToken);
 		node->nont[0] = nont_exp3();
 	} else {
 		node->nont[0] = nont_exp4();
 		if (next.type == opToken && strcmp(next.instance, "/") == 0) {
-			require(opToken);
+			node->token[0] = match(opToken);
 			node->nont[1] = nont_exp3();
 		}
 	}
@@ -107,9 +107,9 @@ Node* nont_exp4() {
 		node->nont[0] = nont_exp();
 		require(opToken, "]");
 	} else if (next.type == intToken) {
-		require(intToken);
+		node->token[0] = match(intToken);
 	} else {
-		require(idToken);
+		node->token[0] = match(idToken);
 	}
 	return node;
 }
@@ -182,7 +182,7 @@ Node* nont_in() {
 	Node* node = new Node();
 	strcpy(node->type, "in");
 	require(scanToken);
-	require(idToken);
+	node->token[0] = match(idToken);
 	require(opToken, ".");
 	return node;
 }
@@ -225,7 +225,7 @@ Node* nont_loop() {
 Node* nont_assign() {
 	Node* node = new Node();
 	strcpy(node->type, "assign");
-	require(idToken);
+	node->token[0] = match(idToken);
 	require(opToken, "~");
 	node->nont[0] = nont_exp();
 	require(opToken, ".");
