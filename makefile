@@ -1,7 +1,7 @@
-P2: p2
-p2: *.h *.cpp
-	g++ *.cpp -o p2
+P3: p3
+p3: *.h *.cpp
+	g++ *.cpp -o p3
 
 .PHONY: clean
 clean:
-	rm p2
+	rm p3
