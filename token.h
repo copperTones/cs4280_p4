@@ -1,9 +1,11 @@
 #ifndef TOKEN_H
 #define TOKEN_H
+#include <string>
+using namespace std;
 
 typedef struct Token {
 	int type;
-	char instance[9];
+	string instance;
 	int line;
 } Token;
 

@@ -1,5 +1,4 @@
 #include "scanner.h"
-#include <string.h>
 #include "langToken.h"
 
 istream* inp;
@@ -16,7 +15,7 @@ Token nextToken() {
 
 	// filter can discard, ie. comments
 	while (next.type == -1) {
-		memset(next.instance, 0, 9);
+		next.instance == "";
 		int state = 0, ci = 0, t, act;
 		char c;
 		while (1) {
@@ -38,7 +37,8 @@ Token nextToken() {
 			} else {
 				// 0000s - jump
 				if (act != 0 && ci < 8)
-					next.instance[ci++] = c;
+					next.instance += c;
+					ci++;
 				state = act;
 				if (c == '\n')
 					line++;

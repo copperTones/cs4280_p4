@@ -1,7 +1,7 @@
 #include "token.h"
 #include "node.h"
 
-extern Token next;
+extern Token nextTk;
 
 Node* parser();
 void require(int);

@@ -98,7 +98,7 @@ int filterToken(Token tk) {
 	int top = 0, bot = 13, mid, m;
 	while (1) {
 		mid = (bot + top)/2;
-		m = strcmp(tk.instance, sortedKeyw[mid]);
+		m = tk.instance.compare(sortedKeyw[mid]);
 		if (bot == top+1 && m != 0) {
 			// not in list -> idToken
 			return 1;

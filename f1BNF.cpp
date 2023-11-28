@@ -35,7 +35,7 @@ Node* nont_start() {
 Node* nont_vars() {
 	Node* node = new Node();
 	strcpy(node->type, "vars");
-	if (next.type == letToken) {
+	if (nextTk.type == letToken) {
 		require(letToken);
 		node->token[0] = match(idToken);
 		require(opToken, "=");
@@ -49,7 +49,7 @@ Node* nont_vars() {
 Node* nont_varList() {
 	Node* node = new Node();
 	strcpy(node->type, "varList");
-	if (next.type == idToken) {
+	if (nextTk.type == idToken) {
 		node->token[0] = match(idToken);
 		require(opToken, "=");
 		node->token[1] = match(intToken);
@@ -62,10 +62,10 @@ Node* nont_exp() {
 	Node* node = new Node();
 	strcpy(node->type, "exp");
 	node->nont[0] = nont_exp2();
-	if (next.type == opToken && strcmp(next.instance, "+") == 0) {
+	if (nextTk.type == opToken && nextTk.instance == "+") {
 		node->token[0] = match(opToken);
 		node->nont[1] = nont_exp();
-	} else if (next.type == opToken && strcmp(next.instance, "-") == 0) {
+	} else if (nextTk.type == opToken && nextTk.instance == "-") {
 		node->token[0] = match(opToken);
 		node->nont[1] = nont_exp();
 	}
@@ -76,7 +76,7 @@ Node* nont_exp2() {
 	Node* node = new Node();
 	strcpy(node->type, "exp2");
 	node->nont[0] = nont_exp3();
-	if (next.type == opToken && strcmp(next.instance, "*") == 0) {
+	if (nextTk.type == opToken && nextTk.instance == "*") {
 		node->token[0] = match(opToken);
 		node->nont[1] = nont_exp2();
 	}
@@ -86,12 +86,12 @@ Node* nont_exp2() {
 Node* nont_exp3() {
 	Node* node = new Node();
 	strcpy(node->type, "exp3");
-	if (next.type == opToken && strcmp(next.instance, "-") == 0) {
+	if (nextTk.type == opToken && nextTk.instance == "-") {
 		node->token[0] = match(opToken);
 		node->nont[0] = nont_exp3();
 	} else {
 		node->nont[0] = nont_exp4();
-		if (next.type == opToken && strcmp(next.instance, "/") == 0) {
+		if (nextTk.type == opToken && nextTk.instance == "/") {
 			node->token[0] = match(opToken);
 			node->nont[1] = nont_exp3();
 		}
@@ -102,11 +102,11 @@ Node* nont_exp3() {
 Node* nont_exp4() {
 	Node* node = new Node();
 	strcpy(node->type, "exp4");
-	if (next.type == opToken && strcmp(next.instance, "[") == 0) {
+	if (nextTk.type == opToken && nextTk.instance == "[") {
 		require(opToken);
 		node->nont[0] = nont_exp();
 		require(opToken, "]");
-	} else if (next.type == intToken) {
+	} else if (nextTk.type == intToken) {
 		node->token[0] = match(intToken);
 	} else {
 		node->token[0] = match(idToken);
@@ -125,7 +125,7 @@ Node* nont_stats() {
 Node* nont_stats2() {
 	Node* node = new Node();
 	strcpy(node->type, "stats2");
-	switch (next.type) {
+	switch (nextTk.type) {
 		case startToken:
 		case scanToken:
 		case printToken:
@@ -142,7 +142,7 @@ Node* nont_stats2() {
 Node* nont_stat() {
 	Node* node = new Node();
 	strcpy(node->type, "stat");
-	switch (next.type) {
+	switch (nextTk.type) {
 		case startToken:
 			node->nont[0] = nont_block();
 			break;
@@ -235,7 +235,7 @@ Node* nont_assign() {
 Node* nont_relOp() {
 	Node* node = new Node();
 	strcpy(node->type, "relOp");
-	switch (next.instance[0]) {
+	switch (nextTk.instance[0]) {
 		case '<':
 		case '>':
 		case '=':

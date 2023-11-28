@@ -1,61 +1,57 @@
-#include <string.h>
-#include <stdio.h>
 #include <stdexcept>
+#include <string>
 #include "scanner.h"
 #include "parser.h"
 #include "langBNF.h"
+using namespace std;
 
-Token next;
+Token nextTk;
 
 Node* parser() {
-	next = nextToken();
+	nextTk = nextToken();
 	Node* tree = nont_start();
-	if (next.type != 0) { // EOF
-		// not willing to reformat to c++ strings
-		char err[100];
-		sprintf(err, "%d: PARSER ERROR: Expected EOF, got %s \"%s\" instead",
-			next.line,
-			tokenNames[next.type],
-			next.instance);
-		throw runtime_error(err);
+	if (nextTk.type != 0) { // EOF
+		throw runtime_error(to_string(nextTk.line)
+			+ ": PARSER ERROR: Expected EOF, got "
+			+ tokenNames[nextTk.type] + " \""
+			+ nextTk.instance
+			+ "\" instead");
 	}
 	return tree;
 }
 
 void require(int type) {
-	if (type != next.type) {
+	if (type != nextTk.type) {
 		errMsg();
 	}
-	next = nextToken();
+	nextTk = nextToken();
 }
 
 void require(int type, const char* instance) {
-	if (type != next.type || strcmp(instance, next.instance) != 0) {
+	if (type != nextTk.type || instance != nextTk.instance) {
 		errMsg();
 	}
-	next = nextToken();
+	nextTk = nextToken();
 }
 
 Token* match(int type) {
 	Token* token = new Token();
-	*token = next;
+	*token = nextTk;
 	require(type);
 	return token;
 }
 
 Token* match(int type, const char* instance) {
 	Token* token = new Token();
-	*token = next;
+	*token = nextTk;
 	require(type, instance);
 	return token;
 }
 
 void errMsg() {
-	// not willing to reformat to c++ strings
-	char err[100];
-	sprintf(err, "%d: PARSER ERROR: Unexpected token %s \"%s\"",
-		next.line,
-		tokenNames[next.type],
-		next.instance);
-	throw runtime_error(err);
+	throw runtime_error(to_string(nextTk.line)
+		+ ": PARSER ERROR: Unexpected token "
+		+ tokenNames[nextTk.type] + " \""
+		+ nextTk.instance
+		+ "\"");
 }
