@@ -7,7 +7,7 @@ using namespace std;
 
 void traverse(Node*);
 
-unordered_map<string, char> vars;
+unordered_map<string, int> vars;
 
 void decorate(Node* sel) {
 	vars.clear();
@@ -28,8 +28,8 @@ void traverse(Node* sel) {
 			break;
 		if (sel->token[i]->type == idToken) {
 			string name = sel->token[i]->instance;
-			if (strcmp(sel->type, "vars") == 0
-				|| strcmp(sel->type, "varList") == 0) {
+			if ((strcmp(sel->type, "vars") == 0)
+				|| (strcmp(sel->type, "varList") == 0)) {
 				if (vars[name] & 1) {
 					throw runtime_error(to_string(sel->token[i]->line)
 						+ ": SEMANTIC ERROR: Redefinition of "
@@ -44,6 +44,6 @@ void traverse(Node* sel) {
 	for (int i = 0; i < 4; i++) {
 		if (sel->nont[i] == NULL)
 			break;
-		decorate(sel->nont[i]);
+		traverse(sel->nont[i]);
 	}
 }

@@ -36,9 +36,10 @@ Token nextToken() {
 				break; // we don't deal with it
 			} else {
 				// 0000s - jump
-				if (act != 0 && ci < 8)
+				if (act != 0 && ci < 8) {
 					next.instance += c;
 					ci++;
+				}
 				state = act;
 				if (c == '\n')
 					line++;
