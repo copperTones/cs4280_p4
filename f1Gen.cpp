@@ -1,7 +1,13 @@
+#include "langTree.h"
 #include "f1Gen.h"
 
 string gen_start(Node* sel) {
-	return "";
+	string s = "STOP";
+	for (auto &v: vars) {
+		s += "\n" + v.first;
+		s += " " + v.second.value;
+	}
+	return s;
 }
 
 string gen_vars(Node* sel) {
