@@ -1,6 +1,7 @@
 #include <string>
 #include "node.h"
 
+string generate(Node*);
 string gen_start(Node*);
 string gen_vars(Node*);
 string gen_varList(Node*);

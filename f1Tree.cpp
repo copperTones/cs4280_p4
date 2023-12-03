@@ -1,3 +1,4 @@
+#include "f1Gen.h"
 #include "langBNF.h"
 #include "langTree.h"
 #include "f1Consts.h"
@@ -23,7 +24,8 @@ void decorate(Node* sel) {
 void traverse(Node* sel) {
 	if (sel == NULL) return;
 	if ((sel->type == &gen_vars
-		|| sel->type == &gen_varList)) {
+		|| sel->type == &gen_varList)
+		&& sel->token[0] != NULL) {
 		// declaring variables
 		string name = sel->token[0]->instance;
 		if (vars[name].flags & 1) {

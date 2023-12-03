@@ -1,6 +1,10 @@
 #include "langTree.h"
 #include "f1Gen.h"
 
+string generate(Node* sel) {
+	return sel->type(sel);
+}
+
 string gen_start(Node* sel) {
 	string s = "STOP";
 	for (auto &v: vars) {
