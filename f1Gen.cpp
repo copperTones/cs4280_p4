@@ -26,19 +26,51 @@ string gen_varList(Node* sel) {
 }
 
 string gen_exp(Node* sel) {
-	return "tmp"; //TODO
+	string s = generate(sel->nont[0]);
+	if (sel->token[0] != NULL) {
+		s += "PUSH\nSTACKW 0\n";
+		s += generate(sel->nont[1]);
+		s += "STORE _\nSTACKR 0\n";
+		if (sel->token[0]->instance == "+") {
+			s += "ADD";
+		} else {
+			s += "SUB";
+		}
+		s += " _\nPOP\n";
+	}
+	return s;
 }
 
 string gen_exp2(Node* sel) {
-	return "tmp"; //TODO
+	string s = generate(sel->nont[0]);
+	if (sel->token[0] != NULL) {
+		s += "PUSH\nSTACKW 0\n";
+		s += generate(sel->nont[1]);
+		s += "STORE _\nSTACKR 0\nMULT _\nPOP\n";
+	}
+	return s;
 }
 
 string gen_exp3(Node* sel) {
-	return "tmp"; //TODO
+	string s = generate(sel->nont[0]);
+	if (sel->token[0] != NULL) {
+		if (sel->token[0]->instance == "/") {
+			s += "PUSH\nSTACKW 0\n";
+			s += generate(sel->nont[1]);
+			s += "STORE _\nSTACKR 0\nDIV _\nPOP\n";
+		} else {
+			s += "MULT -1\n";
+		}
+	}
+	return s;
 }
 
 string gen_exp4(Node* sel) {
-	return "tmp"; //TODO
+	if (sel->nont[0] != NULL) {
+		return generate(sel->nont[0]);
+	} else {
+		return "LOAD " + sel->token[0]->instance + "\n";
+	}
 }
 
 string gen_stats(Node* sel) {
