@@ -18,11 +18,11 @@ string gen_start(Node* sel) {
 }
 
 string gen_vars(Node* sel) {
-	return "tmp"; //TODO
+	return "generator error!\n";
 }
 
 string gen_varList(Node* sel) {
-	return "tmp"; //TODO
+	return "generator error!\n";
 }
 
 string gen_exp(Node* sel) {
@@ -102,11 +102,41 @@ string gen_out(Node* sel) {
 }
 
 string gen_if(Node* sel) {
-	return "if"; //TODO
+	labelId++;
+	string s = generate(sel->nont[0]);
+	s += "PUSH\n"
+	     "STACKW 0\n";
+	s += generate(sel->nont[2]);
+	s += "STORE _\n"
+	     "STACKR 0\n"
+	     "SUB _\n"
+	     "POP\n";
+	s += generate(sel->nont[1]);
+	s += "BR _a" + to_string(labelId) + "\n";
+	s += "_b" + to_string(labelId) + ": NOOP\n";
+	s += generate(sel->nont[3]);
+	s += "_a" + to_string(labelId) + ": NOOP\n";
+	labelId--;
+	return s;
 }
 
 string gen_loop(Node* sel) {
-	return "loop"; //TODO
+	labelId++;
+	string s = "PUSH\n"
+	           "_a" + to_string(labelId) + ": NOOP\n";
+	s += generate(sel->nont[0]);
+	s += "STACKW 0\n";
+	s += generate(sel->nont[2]);
+	s += "STORE _\n"
+	     "STACKR 0\n"
+	     "SUB _\n";
+	s += generate(sel->nont[1]);
+	s += generate(sel->nont[3]);
+	s += "BR _a" + to_string(labelId) + "\n"
+	     "_b" + to_string(labelId) + ": NOOP\n"
+	     "POP\n";
+	labelId--;
+	return s;
 }
 
 string gen_assign(Node* sel) {
@@ -116,5 +146,23 @@ string gen_assign(Node* sel) {
 }
 
 string gen_relOp(Node* sel) {
-	return "relOp"; //TODO
+	string i = sel->token[0]->instance;
+	if (i == "<=") {
+		return "BRPOS _b" + to_string(labelId) + "\n";
+	} else if (i == ">=") {
+		return "BRNEG _b" + to_string(labelId) + "\n";
+	} else if (i == "<") {
+		return "BRZPOS _b" + to_string(labelId) + "\n";
+	} else if (i == ">") {
+		return "BRZNEG _b" + to_string(labelId) + "\n";
+	} else if (i == "=") {
+		return "BRZERO _b" + to_string(labelId) + "\n";
+	} else if (i == "~") {
+		string s = "BRZERO _c" + to_string(labelId) + "\n";
+		s += "BR _b" + to_string(labelId) + "\n";
+		s += "_c" + to_string(labelId) + ": NOOP\n";
+		return s;
+	} else {
+		return "generator error!\n";
+	}
 }
