@@ -1,3 +1,5 @@
+#ifndef F1_GEN_H
+#define F1_GEN_H
 #include <string>
 #include "node.h"
 
@@ -19,3 +21,7 @@ string gen_if(Node*);
 string gen_loop(Node*);
 string gen_assign(Node*);
 string gen_relOp(Node*);
+string label();
+string genBR(string, string, bool = false);
+
+#endif

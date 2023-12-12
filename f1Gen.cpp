@@ -1,8 +1,6 @@
 #include "langTree.h"
 #include "f1Gen.h"
 
-int labelId = 0;
-
 string generate(Node* sel) {
 	return sel->type(sel);
 }
@@ -102,7 +100,7 @@ string gen_out(Node* sel) {
 }
 
 string gen_if(Node* sel) {
-	labelId++;
+	string a = label(), b = label();
 	string s = generate(sel->nont[0]);
 	s += "PUSH\n"
 	     "STACKW 0\n";
@@ -111,31 +109,29 @@ string gen_if(Node* sel) {
 	     "STACKR 0\n"
 	     "SUB _\n"
 	     "POP\n";
-	s += generate(sel->nont[1]);
-	s += "BR _a" + to_string(labelId) + "\n";
-	s += "_b" + to_string(labelId) + ": NOOP\n";
+	s += genBR(sel->nont[1]->token[0]->instance, b);
+	s += "BR " + a + "\n";
+	s += b + ": NOOP\n";
 	s += generate(sel->nont[3]);
-	s += "_a" + to_string(labelId) + ": NOOP\n";
-	labelId--;
+	s += a + ": NOOP\n";
 	return s;
 }
 
 string gen_loop(Node* sel) {
-	labelId++;
+	string a = label(), b = label();
 	string s = "PUSH\n"
-	           "_a" + to_string(labelId) + ": NOOP\n";
+	           + a + ": NOOP\n";
 	s += generate(sel->nont[0]);
 	s += "STACKW 0\n";
 	s += generate(sel->nont[2]);
 	s += "STORE _\n"
 	     "STACKR 0\n"
 	     "SUB _\n";
-	s += generate(sel->nont[1]);
+	s += genBR(sel->nont[1]->token[0]->instance, b, true);
 	s += generate(sel->nont[3]);
-	s += "BR _a" + to_string(labelId) + "\n"
-	     "_b" + to_string(labelId) + ": NOOP\n"
+	s += "BR " + a + "\n"
+	     + b + ": NOOP\n"
 	     "POP\n";
-	labelId--;
 	return s;
 }
 
@@ -146,23 +142,52 @@ string gen_assign(Node* sel) {
 }
 
 string gen_relOp(Node* sel) {
-	string i = sel->token[0]->instance;
-	if (i == "<=") {
-		return "BRPOS _b" + to_string(labelId) + "\n";
-	} else if (i == ">=") {
-		return "BRNEG _b" + to_string(labelId) + "\n";
-	} else if (i == "<") {
-		return "BRZPOS _b" + to_string(labelId) + "\n";
-	} else if (i == ">") {
-		return "BRZNEG _b" + to_string(labelId) + "\n";
-	} else if (i == "=") {
-		return "BRZERO _b" + to_string(labelId) + "\n";
-	} else if (i == "~") {
-		string s = "BRZERO _c" + to_string(labelId) + "\n";
-		s += "BR _b" + to_string(labelId) + "\n";
-		s += "_c" + to_string(labelId) + ": NOOP\n";
-		return s;
+	return "generator error!\n";
+}
+
+string label() {
+	static int labelId = 0;
+	return "_" + to_string(labelId++);
+}
+
+string genBR(string inst, string to, bool swap) {
+	int type;
+	if (inst == "<=") {
+		type = 3;
+	} else if (inst == ">=") {
+		type = 5;
+	} else if (inst == "<") {
+		type = 4;
+	} else if (inst == ">") {
+		type = 2;
+	} else if (inst == "=") {
+		type = 0;
+	} else if (inst == "~") {
+		type = 1;
 	} else {
+		return "generator error!\n";
+	}
+
+	type ^= swap; // even-odd if swap
+	string a, s;
+	switch (type) {
+	case 0:
+		return "BRZERO " + to + "\n";
+	case 1:
+		a = label();
+		s = "BRZERO " + a + "\n";
+		s += "BR " + to + "\n";
+		s += a + ": NOOP\n";
+		return s;
+	case 2:
+		return "BRPOS " + to + "\n";
+	case 3:
+		return "BRZNEG " + to + "\n";
+	case 4:
+		return "BRNEG " + to + "\n";
+	case 5:
+		return "BRZPOS " + to + "\n";
+	default:
 		return "generator error!\n";
 	}
 }
